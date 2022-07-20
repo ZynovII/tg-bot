@@ -1,7 +1,8 @@
 import { Telegraf } from 'telegraf';
 import dotenv from 'dotenv';
 
-dotenv.config();
+const envPath = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env';
+dotenv.config({ path: envPath });
 
 const bot = new Telegraf(process.env.BOT_TOKEN as string);
 
