@@ -35,6 +35,7 @@ bot.hears("I'm working from home today", async (ctx) => {
     const date = new Date();
     await ctx.reply(`${user} is working from home today`);
     storeUser(user, date);
+    Markup.removeKeyboard();
   } catch (e) {
     console.error(e);
   }
@@ -44,6 +45,7 @@ bot.hears("Who's working from home today?", async (ctx) => {
   try {
     const response = (getUsers() && `Today works from home:\n${getUsers()}`) || 'Everybody in office today!';
     await ctx.reply(response);
+    Markup.removeKeyboard();
   } catch (e) {
     console.error(e);
   }
