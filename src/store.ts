@@ -11,6 +11,9 @@ export const clearStore = () => {
 };
 
 export const storeUser = (user: string, date: Date) => {
+  if (isExpired(store.date)) {
+    clearStore();
+  }
   if (!store.users.includes(user)) {
     store.users.push(user);
   }

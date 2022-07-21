@@ -3,8 +3,8 @@ import dotenv from 'dotenv';
 import { commands } from './constants';
 import { getUsers, storeUser } from './store';
 
-const envPath = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env';
-dotenv.config({ path: envPath });
+// const envPath = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env';
+dotenv.config({ path: '.env.prod' });
 
 export const bot = new Telegraf(process.env.BOT_TOKEN as string);
 
@@ -16,25 +16,23 @@ bot.help((ctx) => {
   ctx.reply(commands);
 });
 
-bot.command('remote', async (ctx) => {
+bot.start(async (ctx) => {
   try {
     await ctx.reply(
       'What are you up to?',
-      Markup.inlineKeyboard([
-        [Markup.button.callback("I'm working from home today", 'remote')],
-        [Markup.button.callback("Who's working from home today?", 'list')],
-      ]),
+      Markup.keyboard([["I'm working from home today"], ["Who's working from home today?"]])
+        .oneTime()
+        .resize(),
     );
   } catch (e) {
     console.error(e);
   }
 });
 
-bot.action('remote', async (ctx) => {
+bot.hears("I'm working from home today", async (ctx) => {
   try {
     const user = `@${ctx.from?.username}`;
     const date = new Date();
-    await ctx.answerCbQuery();
     await ctx.reply(`${user} is working from home today`);
     storeUser(user, date);
   } catch (e) {
@@ -42,10 +40,9 @@ bot.action('remote', async (ctx) => {
   }
 });
 
-bot.action('list', async (ctx) => {
+bot.hears("Who's working from home today?", async (ctx) => {
   try {
-    const response = getUsers() || 'Everybody in office today!';
-    await ctx.answerCbQuery();
+    const response = (getUsers() && `Today works from home:\n${getUsers()}`) || 'Everybody in office today!';
     await ctx.reply(response);
   } catch (e) {
     console.error(e);
