@@ -1,4 +1,4 @@
-import { isExpired } from './helpers';
+import { isExpired } from "./helpers";
 
 const store: { date: Date; users: string[] } = {
   date: new Date(),
@@ -24,5 +24,5 @@ export const getUsers = () => {
   if (isExpired(store.date)) {
     clearStore();
   }
-  return store.users.join('\n');
+  return store.users.join("\n");
 };

@@ -1,15 +1,15 @@
-import { Markup, Telegraf } from 'telegraf';
-import dotenv from 'dotenv';
-import { commands } from './constants';
-import { getUsers, storeUser } from './store';
+import { Markup, Telegraf } from "telegraf";
+import dotenv from "dotenv";
+import { commands } from "./constants";
+import { getUsers, storeUser } from "./store";
 
 // const envPath = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env';
-dotenv.config({ path: '.env.prod' });
+dotenv.config({ path: ".env" });
 
 export const bot = new Telegraf(process.env.BOT_TOKEN as string);
 
-bot.on('new_chat_members', (ctx) => {
-  ctx.reply('Welcome 👋');
+bot.on("new_chat_members", (ctx) => {
+  ctx.reply("Welcome 👋");
 });
 
 bot.help((ctx) => {
@@ -19,10 +19,13 @@ bot.help((ctx) => {
 bot.start(async (ctx) => {
   try {
     await ctx.reply(
-      'What are you up to?',
-      Markup.keyboard([["I'm working from home today"], ["Who's working from home today?"]])
+      "What are you up to?",
+      Markup.keyboard([
+        ["I'm working from home today"],
+        ["Who's working from home today?"],
+      ])
         .oneTime()
-        .resize(),
+        .resize()
     );
   } catch (e) {
     console.error(e);
@@ -43,7 +46,9 @@ bot.hears("I'm working from home today", async (ctx) => {
 
 bot.hears("Who's working from home today?", async (ctx) => {
   try {
-    const response = (getUsers() && `Today works from home:\n${getUsers()}`) || 'Everybody in office today!';
+    const response =
+      (getUsers() && `Today works from home:\n${getUsers()}`) ||
+      "Everybody in office today!";
     await ctx.reply(response);
     Markup.removeKeyboard();
   } catch (e) {
@@ -54,5 +59,5 @@ bot.hears("Who's working from home today?", async (ctx) => {
 bot.launch();
 
 // Enable graceful stop
-process.once('SIGINT', () => bot.stop('SIGINT'));
-process.once('SIGTERM', () => bot.stop('SIGTERM'));
+process.once("SIGINT", () => bot.stop("SIGINT"));
+process.once("SIGTERM", () => bot.stop("SIGTERM"));
